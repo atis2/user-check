@@ -44,3 +44,20 @@ def test_add_new_user(setup_database, connection):
 Тест аутентификации пользователя с неправильным паролем.
 Тест отображения списка пользователей.
 """
+
+def test_old_user(setup_database, connection):
+    add_user('testuser1', 'testuser1@example.com', 'password1234')
+    add_user('testuser1', 'testuser1@example.com', 'password1234')
+    cursor = connection.cursor()
+    cursor.execute("SELECT COUNT(*) FROM users WHERE username='testuser1';")
+    user = cursor.fetchone()[0]
+    assert user == 1, "Пользователь должен быть 1"
+
+
+def test_cauthenticate_user(setup_database, connection):
+    add_user('testuser1', 'testuser1@example.com', 'password1234')
+    assert authenticate_user('testuser1', 'password1234') , "Пользователь должен быть "
+
+def test_false_cauthenticate_user(setup_database, connection):
+    add_user('testuser1', 'testuser1@example.com', 'password1234')
+    assert authenticate_user('testuser2', 'password123') == False , "Пользователь neдолжен быть "
